@@ -1,0 +1,12 @@
+c:\users\fromzeus\documents\visual studio 2012\Projects\HighAlgo\HighAlgo\bin\Debug\HighAlgo.dll
+c:\users\fromzeus\documents\visual studio 2012\Projects\HighAlgo\HighAlgo\bin\Debug\HighAlgo.pdb
+c:\users\fromzeus\documents\visual studio 2012\Projects\HighAlgo\HighAlgo\obj\Debug\HighAlgo.dll
+c:\users\fromzeus\documents\visual studio 2012\Projects\HighAlgo\HighAlgo\obj\Debug\HighAlgo.pdb
+c:\users\fromzeus\documents\visual studio 2012\Projects\HighAlgo\HighAlgo\obj\Debug\HighAlgo.csprojResolveAssemblyReference.cache
+c:\users\fromzeus\documents\visual studio 2012\Projects\HighAlgo\HighAlgo\bin\Debug\Binarisation.dll
+C:\Users\FromZeus\Desktop\Project VIS\Project Vis (old)\HighAlgo\HighAlgo\bin\Debug\HighAlgo.dll
+C:\Users\FromZeus\Desktop\Project VIS\Project Vis (old)\HighAlgo\HighAlgo\bin\Debug\HighAlgo.pdb
+C:\Users\FromZeus\Desktop\Project VIS\Project Vis (old)\HighAlgo\HighAlgo\bin\Debug\Binarisation.dll
+C:\Users\FromZeus\Desktop\Project VIS\Project Vis (old)\HighAlgo\HighAlgo\obj\Debug\HighAlgo.csprojResolveAssemblyReference.cache
+C:\Users\FromZeus\Desktop\Project VIS\Project Vis (old)\HighAlgo\HighAlgo\obj\Debug\HighAlgo.dll
+C:\Users\FromZeus\Desktop\Project VIS\Project Vis (old)\HighAlgo\HighAlgo\obj\Debug\HighAlgo.pdb
