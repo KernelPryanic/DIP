@@ -1,0 +1,4 @@
+C:\Users\FromZeus\Desktop\Project VIS\Project Vis (old)\Binarisation\Binarisation\bin\Debug\Binarisation.dll
+C:\Users\FromZeus\Desktop\Project VIS\Project Vis (old)\Binarisation\Binarisation\bin\Debug\Binarisation.pdb
+C:\Users\FromZeus\Desktop\Project VIS\Project Vis (old)\Binarisation\Binarisation\obj\Debug\Binarisation.dll
+C:\Users\FromZeus\Desktop\Project VIS\Project Vis (old)\Binarisation\Binarisation\obj\Debug\Binarisation.pdb
