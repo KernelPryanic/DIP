@@ -425,21 +425,16 @@ namespace ByteGraphics
                             local1[i, j] = local1[iPred, jPred];
                             local2[i, j] = local2[iPred, jPred];
 
-                            buf1 = (way) ? (iPred * stride + jPred * byteLen - rad * byteLen) : (iPred * stride + jPred * byteLen - rad * stride);
-                            if (((way) ? jPred : iPred) - rad >= 0)
-                                if (image[buf1] == compare)
-                                    local1[i, j]++;
-                                else
-                                    local2[i, j]++;
-
                             for (int p = 0; p <= rad; p++)
-                            {
-                                buf1 = (way) ? ((iPred - (rad - p)) * stride + jPred * byteLen - p * byteLen) : ((iPred - p) * stride + jPred * byteLen - (rad - p) * byteLen);
-                                buf2 = (way) ? ((iPred + (rad - p)) * stride + jPred * byteLen - p * byteLen) : ((iPred - p) * stride + jPred * byteLen + (rad - p) * byteLen);
+                            {	
+								int 
+								i1 = (way) ? iPred - (rad - p) : (iPred - p), j1 = (way) ? jPred - p : (jPred - (rad - p)), 
+								i2 = (way) ? iPred + (rad - p) : (iPred - p), j2 = (way) ? jPred - p : (jPred + (rad - p));
 
-                                int i1 = (way) ? iPred - (rad - p) : (iPred - p), j1 = (way) ? jPred - p : (jPred - (rad - p)), i2 = (way) ? iPred + (rad - p) : (iPred - p), j2 = (way) ? jPred - p : ((rad - p) + jPred);
+								buf1 = i1 * stride + j1 * byteLen;
+                                buf2 = i2 * stride + j2 * byteLen;
 
-                                if (i1 >= 0 && j1 >= 0 && i1 < imH && j1 < imW && buf1 < stride * imH)
+                                if (i1 >= 0 && j1 >= 0 && i1 < imH && j1 < imW && buf1 < stride * imH && p < rad)
                                 {
                                     if (image[buf1] == compare)
                                         local1[i, j]--;
@@ -455,12 +450,13 @@ namespace ByteGraphics
                                         local2[i, j]--;
                                 }
 
-                                buf1 = (way) ? ((i - (rad - p)) * stride + j * byteLen + p * byteLen) : ((i + p) * stride + j * byteLen - (rad - p) * byteLen);
-                                buf2 = (way) ? ((i + (rad - p)) * stride + j * byteLen + p * byteLen) : ((i + p) * stride + j * byteLen + (rad - p) * byteLen);
+								i1 = (way) ? i - (rad - p) : (i + p); j1 = (way) ? j + p : (j - (rad - p)); 
+								i2 = (way) ? i + (rad - p) : (i + p); j2 = (way) ? j + p : (j + (rad - p));
 
-                                i1 = (way) ? i - (rad - p) : (i - p); j1 = (way) ? j - p : (j - (rad - p)); i2 = (way) ? i + (rad - p) : (i - p); j2 = (way) ? j - p : ((rad - p) + j);
+                                buf1 = i1 * stride + j1 * byteLen;
+                                buf2 = i2 * stride + j2 * byteLen;
 
-                                if (i1 >= 0 && j1 >= 0 && i1 < imH && j1 < imW && buf1 < stride * imH)
+                                if (i1 >= 0 && j1 >= 0 && i1 < imH && j1 < imW && buf1 < stride * imH && p < rad)
                                 {
                                     if (image[buf1] == compare)
                                         local1[i, j]++;
@@ -476,13 +472,6 @@ namespace ByteGraphics
                                         local2[i, j]++;
                                 }
                             }
-
-                            buf1 = (way) ? (i * stride + j * byteLen + rad * byteLen) : (i * stride + j * byteLen + rad * stride);
-                            if (((way) ? j : i) + rad < ((way) ? imW : imH))
-                                if (image[buf1] == compare)
-                                    local1[i, j]--;
-                                else
-                                    local2[i, j]--;
                         }
                     }
 
