@@ -152,6 +152,7 @@ namespace ByteGraphics
 
         //-------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
+		//Убрать лишние if-else, да и вообще оптимизировать код, также автоматизировать подсчет радиуса в зависимости от размера изображения
         public static byte[] Do_BinarisationNiblack(ref BitmapData btd, int rad = 9, float factor = (float)0.0001, float downTreshold = 20, float upTreshold = 150)
         {
             float[,] br, pTr;
