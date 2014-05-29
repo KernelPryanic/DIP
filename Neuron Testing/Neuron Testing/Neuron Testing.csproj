@@ -44,14 +44,14 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Binarisation">
-      <HintPath>..\..\Binarisation\Binarisation\bin\Debug\Binarisation.dll</HintPath>
-    </Reference>
     <Reference Include="NeuroNet">
       <HintPath>NeuroNet.dll</HintPath>
     </Reference>
     <Reference Include="HighAlgo">
       <HintPath>bin\Release\HighAlgo.dll</HintPath>
+    </Reference>
+    <Reference Include="Binarisation">
+      <HintPath>bin\Release\Binarisation.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

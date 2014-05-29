@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace ByteGraphics
 {
@@ -27,7 +28,7 @@ namespace ByteGraphics
 
         //-------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-		public static byte[] Do_BinarisationGrad(ref BitmapData btd)	//не там распараллеливание, проверить 
+		public static byte[] Do_BinarisationGrad(ref BitmapData btd)
         {
             float tr, s1 = 0, s2 = 0;
             byte[] image;
@@ -40,10 +41,10 @@ namespace ByteGraphics
 
                 Marshal.Copy(btd.Scan0, image, 0, image.Length);
 
-                for (int i = 0; i < imH; i++)
+                Parallel.For(0, imH, delegate(int i)
                 {
-                    int strideY = btd.Stride * i;
-                    Parallel.For(0, imW, delegate(int j)
+                    int strideY = stride * i;
+					for (int j = 0; j < imW; j++)
                     {
                         int idxX1 = strideY + (j + 1) * byteLen, idxX2 = strideY + (j - 1) * byteLen, idxY1 = stride * (i + 1) + j * byteLen, idxY2 = stride * (i - 1) + j * byteLen;
                         float bufx1 = (j == imW - 1) ? 0 : ((br[i, j + 1] == float.MaxValue) ? br[i, j + 1] = (float)((image[idxX1] * 0.11 + image[idxX1 + 1] * 0.59 + image[idxX1 + 2] * 0.3) / mxBr) : br[i, j + 1]),
@@ -55,22 +56,22 @@ namespace ByteGraphics
                             br[i, j] = (float)((image[strideY + j * byteLen] * 0.11 + image[strideY + j * byteLen + 1] * 0.59 + image[strideY + j * byteLen + 2] * 0.3) / mxBr);
                         s1 += br[i, j] * buf;
                         s2 += buf;
-                    });
-                }
+                    }
+				});
                 tr = s1 / s2;
                 //-------------------------------------------------------------------------------//
-                for (int i = 0; i < imH; i++)
+                Parallel.For(0, imH, delegate(int i)
                 {
-                    int strideY = btd.Stride * i;
-                    Parallel.For(0, imW, delegate(int j)
+                    int strideY = stride * i;
+					for (int j = 0; j < imW; j++)
                     {
                         int idx = strideY + j * byteLen;
                         if (br[i, j] > tr)
                             image[idx] = image[idx + 1] = image[idx + 2] = mxBr;
                         else
                             image[idx] = image[idx + 1] = image[idx + 2] = 0;
-                    });
-                }
+                    }
+				});
 
                 Marshal.Copy(image, 0, btd.Scan0, btd.Stride * btd.Height);
             }
@@ -130,18 +131,18 @@ namespace ByteGraphics
 
                 //-------------------------------------------------------------------------------//
 
-                for (int i = 0; i < imH; i++)
+                Parallel.For(0, imH, delegate(int i)
                 {
-                    int strideY = btd.Stride * i;
-                    Parallel.For(0, imW, delegate(int j)
+                    int strideY = stride * i;
+					for (int j = 0; j < imW; j++)
                     {
                         int idx = strideY + j * byteLen;
                         if (br[i, j] > tr)
                             image[idx] = image[idx + 1] = image[idx + 2] = mxBr;
                         else
                             image[idx] = image[idx + 1] = image[idx + 2] = 0;
-                    });
-                }
+                    }
+				});
 
                 Marshal.Copy(image, 0, btd.Scan0, btd.Stride * btd.Height);
             }
