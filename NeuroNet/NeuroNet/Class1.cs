@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BaseConstInit;
 
 namespace NeuroNet
 {
     public class HopfNet
     {
         public int N, numbImg;
-        public float[,] cncts;
+        public float[][] cncts;
         public sbyte[] nrns;
         public char ch;
 
@@ -17,7 +18,7 @@ namespace NeuroNet
         {
             N = n * n;
             ch = chr;
-            cncts = new float[N, N];
+            BCI<float>.init(ref cncts, N, N);
             nrns = new sbyte[N];
             numbImg = colIm;
 
@@ -28,7 +29,7 @@ namespace NeuroNet
                     float sum = 0;
                     for (int k = 0; k < colIm; k++)
                         sum += (images[k][i * bitn] == 255 ? -1 : 1) * (images[k][j * bitn] == 255 ? -1 : 1);
-                    cncts[i, j] = cncts[j, i] = sum / N;
+                    cncts[i][j] = cncts[j][i] = sum / N;
                 }
             });
         }
@@ -50,7 +51,7 @@ namespace NeuroNet
                 {
                     sum = 0;
                     for (int k = 0; k < N; k++)
-                        sum += netBuf[k] * cncts[j, k];
+                        sum += netBuf[k] * cncts[j][k];
                     nrns[j] = (sum >= 0) ? (sbyte)1 : (sbyte)-1;
                     if (netBuf[j] == nrns[j])
                         col++;

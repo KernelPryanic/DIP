@@ -14,6 +14,7 @@ using NeuroNet;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using HighAlgorithms;
+using BaseConstInit;
 
 namespace Neuron_Testing
 {
@@ -78,7 +79,9 @@ namespace Neuron_Testing
                                     bufIm = Transformation.Do_BinarisationOts(ref btd);
                                     bt.UnlockBits(btd);
 
-                                    bool[,] used = new bool[btd.Height, btd.Width];
+                                    bool[][] used = null;
+                                    BCI<bool>.init(ref used, btd.Height, btd.Width);
+                                    
                                     for (int i = 0; i < bufIm.Length; i += byteLen)
                                         if (i - btd.Stride * (i / btd.Stride) < byteLen * btd.Width && bufIm[i] == 0 && bufIm[i + 1] == 0 && bufIm[i + 2] == 0)
                                         {
@@ -135,7 +138,9 @@ namespace Neuron_Testing
                     Tuple<byte[], Point, Point, int> symb = null;
 
                     long t1 = DateTime.Now.Ticks;
-                    bool[,] used = new bool[btd.Height, btd.Width];
+                    bool[][] used= null;
+                    BCI<bool>.init(ref used, btd.Height, btd.Width);
+                    
                     for (int i = 0; i < btd.Stride * btd.Height; i += byteLen)
                         if (i + 2 < btd.Stride * btd.Height && im[i] == 0 && im[i + 1] == 0 && im[i + 2] == 0)
                         {

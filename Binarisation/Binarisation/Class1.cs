@@ -8,22 +8,18 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading;
+using BaseConstInit;
 
 namespace ByteGraphics
 {
-    public class BaseConstants
+    public class Transformation : BCI<int>
     {
-        public const int mxBr = 255, byteLen = 3;
-    }
-
-    public class Transformation : BaseConstants
-    {
-        public static void fill(out float[,] arr, int n, int m)
+        public static void fill(out float[][] arr, int n, int m)
         {
-            arr = new float[n, m];
+            BCI<float>.initOut(out arr, n, m);
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < m; j++)
-                    arr[i, j] = float.MaxValue;
+                    arr[i][j] = float.MaxValue;
         }
 
         //-------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -32,7 +28,7 @@ namespace ByteGraphics
         {
             float tr, s1 = 0, s2 = 0;
             byte[] image;
-            float[,] br;
+            float[][] br = null;
             try
             {
                 int imW = btd.Width, imH = btd.Height, stride = btd.Stride;
@@ -47,14 +43,14 @@ namespace ByteGraphics
 					for (int j = 0; j < imW; j++)
                     {
                         int idxX1 = strideY + (j + 1) * byteLen, idxX2 = strideY + (j - 1) * byteLen, idxY1 = stride * (i + 1) + j * byteLen, idxY2 = stride * (i - 1) + j * byteLen;
-                        float bufx1 = (j == imW - 1) ? 0 : ((br[i, j + 1] == float.MaxValue) ? br[i, j + 1] = (float)((image[idxX1] * 0.11 + image[idxX1 + 1] * 0.59 + image[idxX1 + 2] * 0.3) / mxBr) : br[i, j + 1]),
-                            bufx2 = (j == 0) ? 0 : ((br[i, j - 1] == float.MaxValue) ? br[i, j - 1] = (float)((image[idxX2] * 0.11 + image[idxX2 + 1] * 0.59 + image[idxX2 + 2] * 0.3) / mxBr) : br[i, j - 1]),
-                            bufy1 = (i == imH - 1) ? 0 : ((br[i + 1, j] == float.MaxValue) ? br[i + 1, j] = (float)((image[idxY1] * 0.11 + image[idxY1 + 1] * 0.59 + image[idxY1 + 2] * 0.3) / mxBr) : br[i + 1, j]),
-                            bufy2 = (i == 0) ? 0 : ((br[i - 1, j] == float.MaxValue) ? br[i - 1, j] = (float)((image[idxY2] * 0.11 + image[idxY2 + 1] * 0.59 + image[idxY2 + 2] * 0.3) / mxBr) : br[i - 1, j]);
+                        float bufx1 = (j == imW - 1) ? 0 : ((br[i][j + 1] == float.MaxValue) ? br[i][j + 1] = (float)((image[idxX1] * 0.11 + image[idxX1 + 1] * 0.59 + image[idxX1 + 2] * 0.3) / mxBr) : br[i][j + 1]),
+                            bufx2 = (j == 0) ? 0 : ((br[i][j - 1] == float.MaxValue) ? br[i][j - 1] = (float)((image[idxX2] * 0.11 + image[idxX2 + 1] * 0.59 + image[idxX2 + 2] * 0.3) / mxBr) : br[i][j - 1]),
+                            bufy1 = (i == imH - 1) ? 0 : ((br[i + 1][j] == float.MaxValue) ? br[i + 1][j] = (float)((image[idxY1] * 0.11 + image[idxY1 + 1] * 0.59 + image[idxY1 + 2] * 0.3) / mxBr) : br[i + 1][j]),
+                            bufy2 = (i == 0) ? 0 : ((br[i - 1][j] == float.MaxValue) ? br[i - 1][j] = (float)((image[idxY2] * 0.11 + image[idxY2 + 1] * 0.59 + image[idxY2 + 2] * 0.3) / mxBr) : br[i - 1][j]);
                         float buf = Math.Max(Math.Abs(bufx2 - bufx1), Math.Abs(bufy2 - bufy1));
-                        if (br[i, j] == float.MaxValue)
-                            br[i, j] = (float)((image[strideY + j * byteLen] * 0.11 + image[strideY + j * byteLen + 1] * 0.59 + image[strideY + j * byteLen + 2] * 0.3) / mxBr);
-                        s1 += br[i, j] * buf;
+                        if (br[i][j] == float.MaxValue)
+                            br[i][j] = (float)((image[strideY + j * byteLen] * 0.11 + image[strideY + j * byteLen + 1] * 0.59 + image[strideY + j * byteLen + 2] * 0.3) / mxBr);
+                        s1 += br[i][j] * buf;
                         s2 += buf;
                     }
 				});
@@ -66,7 +62,7 @@ namespace ByteGraphics
 					for (int j = 0; j < imW; j++)
                     {
                         int idx = strideY + j * byteLen;
-                        if (br[i, j] > tr)
+                        if (br[i][j] > tr)
                             image[idx] = image[idx + 1] = image[idx + 2] = mxBr;
                         else
                             image[idx] = image[idx + 1] = image[idx + 2] = 0;
@@ -84,7 +80,7 @@ namespace ByteGraphics
         public static byte[] Do_BinarisationOts(ref BitmapData btd)
         {
             byte[] image;
-            float[,] br;
+            float[][] br = null;
             float[] p = new float[mxBr + 1];
             float dispers = 0, tr = 0;
             try
@@ -101,8 +97,8 @@ namespace ByteGraphics
                     int strideY = stride * i;
                     for (int j = 0; j < imW; j++)
                     {
-                        br[i, j] = (float)(image[strideY + j * byteLen] * 0.11 + image[strideY + j * byteLen + 1] * 0.59 + image[strideY + j * byteLen + 2] * 0.3);
-                        p[(int)(br[i, j])] += addF;
+                        br[i][j] = (float)(image[strideY + j * byteLen] * 0.11 + image[strideY + j * byteLen + 1] * 0.59 + image[strideY + j * byteLen + 2] * 0.3);
+                        p[(int)(br[i][j])] += addF;
                     }
                 });
 
@@ -137,7 +133,7 @@ namespace ByteGraphics
 					for (int j = 0; j < imW; j++)
                     {
                         int idx = strideY + j * byteLen;
-                        if (br[i, j] > tr)
+                        if (br[i][j] > tr)
                             image[idx] = image[idx + 1] = image[idx + 2] = mxBr;
                         else
                             image[idx] = image[idx + 1] = image[idx + 2] = 0;
@@ -154,17 +150,17 @@ namespace ByteGraphics
 
         public static byte[] Do_BinarisationNiblack(ref BitmapData btd, int rad = 9, float factor = (float)0.0001, float downTreshold = 20, float upTreshold = 150)
         {
-            float[,] br, pTr;
+            float[][] br = null, pTr = null;
             byte[] image = new byte[btd.Stride * btd.Height];
-            Tuple<int, float, float>[,] buffer;
+            Tuple<int, float, float>[][] buffer = null;
             float bufIt2 = 0, bufIt3 = 0, bufBr;
             int col = 0;
 
             try
             {
                 int imW = btd.Width, imH = btd.Height, stride = btd.Stride;
-                pTr = new float[imH + 1, imW + 1];
-                buffer = new Tuple<int, float, float>[imH + 1, imW + 1];
+                BCI<float>.init(ref pTr, imH + 1, imW + 1);
+                BCI<Tuple<int, float, float>>.init(ref buffer, imH + 1, imW + 1);
                 fill(out br, imH + 1, imW + 1);
 
                 Marshal.Copy(btd.Scan0, image, 0, image.Length);
@@ -175,17 +171,17 @@ namespace ByteGraphics
                         int buf = btd.Stride * i + byteLen * j;
                         if (buf + 2 < btd.Stride * imH)
                         {
-                            br[i, j] = bufBr = (float)(image[buf] * 0.11 + image[buf + 1] * 0.59 + image[buf + 2] * 0.3);
+                            br[i][j] = bufBr = (float)(image[buf] * 0.11 + image[buf + 1] * 0.59 + image[buf + 2] * 0.3);
                             col++;
                             bufIt2 += bufBr;
                             bufIt3 += bufBr * bufBr;
                         }
                     }
 
-                buffer[0, 0] = Tuple.Create(col, bufIt2, bufIt3);
+                buffer[0][0] = Tuple.Create(col, bufIt2, bufIt3);
                 bufIt2 /= col; bufIt3 /= col;
                 bufIt3 = (float)Math.Sqrt(bufIt3 - bufIt2 * bufIt2);
-                pTr[0, 0] = bufIt2 * (1 + factor * (bufIt3 / rad - 1)) - (float)Math.Sqrt(bufIt3);
+                pTr[0][0] = bufIt2 * (1 + factor * (bufIt3 / rad - 1)) - (float)Math.Sqrt(bufIt3);
 
                 for (int i = 0; i < imH; i++)
                 {
@@ -196,12 +192,12 @@ namespace ByteGraphics
                         int buf;
                         if (j > 0)
                         {
-                            col = buffer[i, j - 1].Item1; bufIt2 = buffer[i, j - 1].Item2; bufIt3 = buffer[i, j - 1].Item3;
+                            col = buffer[i][j - 1].Item1; bufIt2 = buffer[i][j - 1].Item2; bufIt3 = buffer[i][j - 1].Item3;
                             way = true;
                         }
                         else
                         {
-                            col = buffer[i - 1, j].Item1; bufIt2 = buffer[i - 1, j].Item2; bufIt3 = buffer[i - 1, j].Item3;
+                            col = buffer[i - 1][j].Item1; bufIt2 = buffer[i - 1][j].Item2; bufIt3 = buffer[i - 1][j].Item3;
                             way = false;
                         }
 
@@ -213,7 +209,7 @@ namespace ByteGraphics
 
                             if (iBif < imH && jBif < imW)
                             {
-                                br[iBif, jBif] = bufBr = (float)(image[buf] * 0.11 + image[buf + 1] * 0.59 + image[buf + 2] * 0.3);
+                                br[iBif][jBif] = bufBr = (float)(image[buf] * 0.11 + image[buf + 1] * 0.59 + image[buf + 2] * 0.3);
                                 bufIt2 += bufBr;
                                 bufIt3 += bufBr * bufBr;
                                 col++;
@@ -231,10 +227,10 @@ namespace ByteGraphics
                             }
                         }
 
-                        buffer[i, j] = Tuple.Create(col, bufIt2, bufIt3);
+                        buffer[i][j] = Tuple.Create(col, bufIt2, bufIt3);
                         bufIt2 /= col; bufIt3 /= col;
                         bufIt3 = (float)Math.Sqrt(bufIt3 - bufIt2 * bufIt2);
-                        pTr[i, j] = bufIt2 * (1 + factor * (bufIt3 / rad - 1)) - (float)Math.Sqrt(bufIt3);
+                        pTr[i][j] = bufIt2 * (1 + factor * (bufIt3 / rad - 1)) - (float)Math.Sqrt(bufIt3);
                     }
                 }
 
@@ -246,13 +242,13 @@ namespace ByteGraphics
                     for (int j = 0; j < imW; j++)
                     {
                         int idx = strideY + j * byteLen;
-                        if (br[i, j] > upTreshold)
+                        if (br[i][j] > upTreshold)
                             image[idx] = image[idx + 1] = image[idx + 2] = 255;
                         else
-                            if (br[i, j] < downTreshold)
+                            if (br[i][j] < downTreshold)
                                 image[idx] = image[idx + 1] = image[idx + 2] = 0;
                             else
-                                if (br[i, j] > pTr[i, j])
+                                if (br[i][j] > pTr[i][j])
                                     image[idx] = image[idx + 1] = image[idx + 2] = 255;
                                 else
                                     image[idx] = image[idx + 1] = image[idx + 2] = 0;
@@ -277,7 +273,8 @@ namespace ByteGraphics
             {
                 int imH = btd.Height, imW = btd.Width, stride = btd.Stride, xR = 0, yR = 0, xD = 0, yD = 0;
                 image = new byte[btd.Stride * imH];
-                Tuple<int, int, int, int, byte>[,] localMx = new Tuple<int, int, int, int, byte>[imH + 1, imW + 1];
+                Tuple<int, int, int, int, byte>[][] localMx = null;
+                BCI<Tuple<int, int, int, int, byte>>.init(ref localMx, imH + 1, imW + 1);
 
                 Marshal.Copy(btd.Scan0, image, 0, image.Length);
 
@@ -285,7 +282,7 @@ namespace ByteGraphics
                 {
                     for (int i = 0; i < imH; i++)
                         for (int j = 0; j < imW; j++)
-                            localMx[i, j] = Tuple.Create(0, 0, 0, 0, (byte)((wat) ? 0 : 255));
+                            localMx[i][j] = Tuple.Create(0, 0, 0, 0, (byte)((wat) ? 0 : 255));
 
                     for (int i = 0; i <= Math.Min(rad, imH); i++)
                     {
@@ -308,7 +305,7 @@ namespace ByteGraphics
                     }
                     if (bufMx == compare)
                     {
-                        localMx[0, 0] = Tuple.Create(yD, xD, yR, xR, bufMx);
+                        localMx[0][0] = Tuple.Create(yD, xD, yR, xR, bufMx);
                         image[0] = image[1] = image[2] = compare;
                     }
 
@@ -322,10 +319,10 @@ namespace ByteGraphics
                             way = (j > 0) ? true : false;
 
                             int iPred = (way) ? i : i - 1, jPred = ((way) ? j - 1 : j),
-                                predY = (way) ? localMx[iPred, jPred].Item3 : localMx[iPred, jPred].Item1, predX = (way) ? localMx[iPred, jPred].Item4 : localMx[iPred, jPred].Item2;
-                            bufMx = localMx[iPred, jPred].Item5;
-                            yD = localMx[iPred, jPred].Item1; xD = localMx[iPred, jPred].Item2;
-                            yR = localMx[iPred, jPred].Item3; xR = localMx[iPred, jPred].Item4;
+                                predY = (way) ? localMx[iPred][jPred].Item3 : localMx[iPred][jPred].Item1, predX = (way) ? localMx[iPred][jPred].Item4 : localMx[iPred][jPred].Item2;
+                            bufMx = localMx[iPred][jPred].Item5;
+                            yD = localMx[iPred][jPred].Item1; xD = localMx[iPred][jPred].Item2;
+                            yR = localMx[iPred][jPred].Item3; xR = localMx[iPred][jPred].Item4;
                             bool already = false;
 
                             for (int p = Math.Max(((way) ? i : j) - rad, 0); p <= Math.Min(((way) ? imH : imW) - 1, ((way) ? i : j) + rad); p++)
@@ -359,7 +356,7 @@ namespace ByteGraphics
                                     }
                                 }
                             }
-                            localMx[i, j] = Tuple.Create(yD, xD, yR, xR, bufMx);
+                            localMx[i][j] = Tuple.Create(yD, xD, yR, xR, bufMx);
                         }
                     }
 
@@ -369,7 +366,7 @@ namespace ByteGraphics
                     {
                         int strideY = i * stride;
                         for (int j = 0; j < imW; j++)
-                            if (localMx[i, j].Item5 == compare)
+                            if (localMx[i][j].Item5 == compare)
                             {
                                 int bufIdx = strideY + j * byteLen;
                                 image[bufIdx] = image[bufIdx + 1] = image[bufIdx + 2] = compare;
@@ -395,7 +392,9 @@ namespace ByteGraphics
             {
                 int imH = btd.Height, imW = btd.Width, stride = btd.Stride;
                 image = new byte[btd.Stride * imH];
-                int[,] local1 = new int[imH + 1, imW + 1], local2 = new int[imH + 1, imW + 1];
+                int[][] local1 = null, local2 = null;
+                BCI<int>.init(ref local1, imH + 1, imW + 1);
+                BCI<int>.init(ref local2, imH + 1, imW + 1);
 
                 Marshal.Copy(btd.Scan0, image, 0, image.Length);
 
@@ -407,9 +406,9 @@ namespace ByteGraphics
                         for (int j = 0; j <= Math.Min(rad - i, imW - i); j++)
                         {
                             if (image[strideY + byteLen * j] == compare)
-                                local1[0, 0]++;
+                                local1[0][0]++;
                             else
-                                local2[0, 0]++;
+                                local2[0][0]++;
                         }
                     }
 
@@ -422,8 +421,8 @@ namespace ByteGraphics
                             way = (j > 0) ? true : false;
 
                             int iPred = (way) ? i : (i - 1), jPred = ((way) ? j - 1 : j);
-                            local1[i, j] = local1[iPred, jPred];
-                            local2[i, j] = local2[iPred, jPred];
+                            local1[i][j] = local1[iPred][jPred];
+                            local2[i][j] = local2[iPred][jPred];
 
                             for (int p = 0; p <= rad; p++)
                             {	
@@ -437,17 +436,17 @@ namespace ByteGraphics
                                 if (i1 >= 0 && j1 >= 0 && i1 < imH && j1 < imW && buf1 < stride * imH && p < rad)
                                 {
                                     if (image[buf1] == compare)
-                                        local1[i, j]--;
+                                        local1[i][j]--;
                                     else
-                                        local2[i, j]--;
+                                        local2[i][j]--;
                                 }
 
                                 if (i2 < imH && j2 < imW && i2 >= 0 && j2 >= 0 && buf2 < stride * imH)
                                 {
                                     if (image[buf2] == compare)
-                                        local1[i, j]--;
+                                        local1[i][j]--;
                                     else
-                                        local2[i, j]--;
+                                        local2[i][j]--;
                                 }
 
 								i1 = (way) ? i - (rad - p) : (i + p); j1 = (way) ? j + p : (j - (rad - p)); 
@@ -459,17 +458,17 @@ namespace ByteGraphics
                                 if (i1 >= 0 && j1 >= 0 && i1 < imH && j1 < imW && buf1 < stride * imH && p < rad)
                                 {
                                     if (image[buf1] == compare)
-                                        local1[i, j]++;
+                                        local1[i][j]++;
                                     else
-                                        local2[i, j]++;
+                                        local2[i][j]++;
                                 }
 
                                 if (i2 < imH && j2 < imW && i2 >= 0 && j2 >= 0 && buf2 < stride * imH)
                                 {
                                     if (image[buf2] == compare)
-                                        local1[i, j]++;
+                                        local1[i][j]++;
                                     else
-                                        local2[i, j]++;
+                                        local2[i][j]++;
                                 }
                             }
                         }
@@ -481,7 +480,7 @@ namespace ByteGraphics
                     {
                         int strideY = i * stride;
                         for (int j = 0; j < imW; j++)
-                            if ((type == 1 && local1[i, j] >= local2[i, j]) || (type == 2 && local1[i, j] > local2[i, j]) || (type == 3 && local1[i, j] >= 1))
+                            if ((type == 1 && local1[i][j] >= local2[i][j]) || (type == 2 && local1[i][j] > local2[i][j]) || (type == 3 && local1[i][j] >= 1))
                             {
                                 int bufIdx = strideY + j * byteLen;
                                 image[bufIdx] = image[bufIdx + 1] = image[bufIdx + 2] = compare;
@@ -516,11 +515,11 @@ namespace ByteGraphics
 
         //-------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-        static void bfs(ref byte[] image, ref bool[,] used, int y, int x, ref int uBord, ref int rBord, ref int dBord, ref int lBord, int imH, int imW, int stride)
+        static void bfs(ref byte[] image, ref bool[][] used, int y, int x, ref int uBord, ref int rBord, ref int dBord, ref int lBord, int imH, int imW, int stride)
         {
             Queue<Tuple<int, int>> qu = new Queue<Tuple<int,int>>();
             qu.Enqueue(Tuple.Create(y, x));
-            used[y, x] = true;
+            used[y][x] = true;
 
             while (qu.Count > 0)
             {
@@ -537,24 +536,24 @@ namespace ByteGraphics
 
                 for (int i = -1; i <= 1; i++)
                     for (int j = -1; j <= 1; j++)
-                        if (y + i >= 0 && y + i < imH && x + j >= 0 && x + j < imW && !used[y + i, x + j] && image[(y + i) * stride + (x + j) * byteLen] == 0)
+                        if (y + i >= 0 && y + i < imH && x + j >= 0 && x + j < imW && !used[y + i][x + j] && image[(y + i) * stride + (x + j) * byteLen] == 0)
                         {
                             qu.Enqueue(Tuple.Create(y + i, x + j));
-                            used[y + i, x + j] = true;
+                            used[y + i][x + j] = true;
                         }
             }
         }
 
         //-------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-        public static Tuple<byte[], Point, Point, int> getSymb(ref byte[] image, ref bool[,] used, int idx, int imH, int imW, int stride)
+        public static Tuple<byte[], Point, Point, int> getSymb(ref byte[] image, ref bool[][] used, int idx, int imH, int imW, int stride)
         {
             byte[] resImage;
             int dr, nSize, y = idx / stride, x = (idx - ((int)(idx / stride) * stride)) / byteLen;
             bool dir;
             Point pt1, pt2;
 
-            if (used[y, x])
+            if (used[y][x])
                 return null;
 
             try

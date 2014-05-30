@@ -44,14 +44,17 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="NeuroNet">
-      <HintPath>NeuroNet.dll</HintPath>
+    <Reference Include="Binarisation">
+      <HintPath>..\..\Binarisation\Binarisation\bin\Release\Binarisation.dll</HintPath>
     </Reference>
     <Reference Include="HighAlgo">
-      <HintPath>bin\Release\HighAlgo.dll</HintPath>
+      <HintPath>..\..\HighAlgo\HighAlgo\bin\Release\HighAlgo.dll</HintPath>
     </Reference>
-    <Reference Include="Binarisation">
-      <HintPath>bin\Release\Binarisation.dll</HintPath>
+    <Reference Include="NeuroNet">
+      <HintPath>..\..\NeuroNet\NeuroNet\bin\Release\NeuroNet.dll</HintPath>
+    </Reference>
+    <Reference Include="BaseConstInit">
+      <HintPath>..\..\BaseConstInit\BaseConstInit\bin\Release\BaseConstInit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
