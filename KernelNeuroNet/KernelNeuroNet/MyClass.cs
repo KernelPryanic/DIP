@@ -9,12 +9,13 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading;
 using MatrixOperations;
+using BaseConstInit;
 
 namespace KernelNeuroNet
 {
 	public class KernelNet
 	{
-		float[,] cnts;
+		float[][] cnts;
 	
 		public KernelNet(byte[][] images, int n, int fn, int bitn, char chr)
 		{
@@ -24,10 +25,11 @@ namespace KernelNeuroNet
 			for (int i = 0; i < images.GetLength(0); i++)
 				expImages[i] = DimUp(images[i], fn);
 				
-			cnts = new float[fn, fn];
+			BCI<float>.init(ref cnts, fn, fn);
+			
 			for (int i = 0; i < fn; i++)
 				for (int j = 0; j < fn; j++)
-					cnts[i, j] = K(expImages[i], expImages[j]);
+					cnts[i][j] = K(expImages[i], expImages[j]);
 		}
 		
 		/*public Tuple<float, char> Recognize()

@@ -37,6 +37,9 @@
     <Reference Include="MatrixOperations">
       <HintPath>..\..\MatrixOperations\MatrixOperations\bin\Release\MatrixOperations.dll</HintPath>
     </Reference>
+    <Reference Include="BaseConstInit">
+      <HintPath>..\..\BaseConstInit\BaseConstInit\bin\Release\BaseConstInit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MyClass.cs" />

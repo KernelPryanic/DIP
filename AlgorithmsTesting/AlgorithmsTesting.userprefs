@@ -1,8 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="AlgorithmsTesting/bin/Release/input.txt">
+  <MonoDevelop.Ide.Workbench ActiveDocument="AlgorithmsTesting/Program.cs">
     <Files>
-      <File FileName="AlgorithmsTesting/Program.cs" Line="26" Column="1" />
+      <File FileName="AlgorithmsTesting/Program.cs" Line="123" Column="33" />
       <File FileName="AlgorithmsTesting/bin/Release/input.txt" Line="4" Column="6" />
     </Files>
   </MonoDevelop.Ide.Workbench>
