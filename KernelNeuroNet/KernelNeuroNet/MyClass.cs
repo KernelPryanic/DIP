@@ -15,21 +15,30 @@ namespace KernelNeuroNet
 {
 	public class KernelNet
 	{
-		float[][] cnts;
+ 		float[][] revCnts;
+		byte[][] memImages;
+		int N, fN;
 	
 		public KernelNet(byte[][] images, int n, int fn, int bitn, char chr)
 		{
-			byte[][] expImages = new byte[images.GetLength(0)][];
-			Array.Copy(images, expImages, 0);
+			N = n * n;
+			fN = fn * fn;
+			byte[][] expImages = new byte[images.Length][];
+			memImages = new byte[images.Length][];
 			
 			for (int i = 0; i < images.GetLength(0); i++)
-				expImages[i] = DimUp(images[i], fn);
+			{
+				memImages[i] = Sify(images[i], bitn);
+				expImages[i] = DimUp(memImages[i], fN);
+			}
 				
-			BCI<float>.init(ref cnts, fn, fn);
+			float[][] cnts = null;
+			BCI<float>.init(ref cnts, fN, fN);
 			
-			for (int i = 0; i < fn; i++)
-				for (int j = 0; j < fn; j++)
+			for (int i = 0; i < fN; i++)
+				for (int j = 0; j < fN; j++)
 					cnts[i][j] = K(expImages[i], expImages[j]);
+			revCnts = MtrxOps.GetReverse(cnts);
 		}
 		
 		/*public Tuple<float, char> Recognize()
@@ -85,6 +94,14 @@ namespace KernelNeuroNet
 			for (int i = 0; i < v1.Length; i++)
 				res += (float)(v1[i] * v2[i]);
 				
+			return res;
+		}
+		
+		byte[] Sify(byte[] image, int bitn)
+		{
+			byte[] res = new byte[image.Length / 3];
+			for (int i = 0; i < res.Length; i++)
+				res[i] = (byte)((image[i * bitn] == 0) ? 1 : 0);
 			return res;
 		}
 	}

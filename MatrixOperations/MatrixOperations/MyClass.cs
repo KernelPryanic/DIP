@@ -140,7 +140,6 @@ namespace MatrixOperations
 			float res = 1;
 			float[][] arr = null;
 			BCI<float>.init(ref arr, mtrx.Length, mtrx[0].Length);
-			
 			for (int i = 0; i < mtrx.Length; i++)
 				Array.Copy(mtrx[i], arr[i], mtrx[i].Length);
 			
