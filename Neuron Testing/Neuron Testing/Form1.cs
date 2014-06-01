@@ -80,7 +80,7 @@ namespace Neuron_Testing
                                     bt.UnlockBits(btd);
 
                                     bool[][] used = null;
-                                    BCI<bool>.init(ref used, btd.Height, btd.Width);
+                                    BCI.init<bool>(ref used, btd.Height, btd.Width);
                                     
                                     for (int i = 0; i < bufIm.Length; i += byteLen)
                                         if (i - btd.Stride * (i / btd.Stride) < byteLen * btd.Width && bufIm[i] == 0 && bufIm[i + 1] == 0 && bufIm[i + 2] == 0)
@@ -139,7 +139,7 @@ namespace Neuron_Testing
 
                     long t1 = DateTime.Now.Ticks;
                     bool[][] used= null;
-                    BCI<bool>.init(ref used, btd.Height, btd.Width);
+                    BCI.init<bool>(ref used, btd.Height, btd.Width);
                     
                     for (int i = 0; i < btd.Stride * btd.Height; i += byteLen)
                         if (i + 2 < btd.Stride * btd.Height && im[i] == 0 && im[i + 1] == 0 && im[i + 2] == 0)

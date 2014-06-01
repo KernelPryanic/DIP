@@ -8,10 +8,10 @@ namespace MatrixOperations
 {
 	public class MtrxOps
 	{
-		public static float[][] GetTransp(float[][] mtrx)
+		public static T[][] GetTransp<T>(T[][] mtrx)
 		{
-			float[][] outMtrx = null;
-			BCI<float>.init(ref outMtrx, mtrx[0].Length, mtrx.Length);
+			T[][] outMtrx = null;
+			BCI.init<T>(ref outMtrx, mtrx[0].Length, mtrx.Length);
 			
 			Parallel.For (0, mtrx.Length, delegate(int i) {
 				for (int j = 0; j < mtrx[0].Length; j++)
@@ -139,7 +139,7 @@ namespace MatrixOperations
 		
 			float res = 1;
 			float[][] arr = null;
-			BCI<float>.init(ref arr, mtrx.Length, mtrx[0].Length);
+			BCI.init<float>(ref arr, mtrx.Length, mtrx[0].Length);
 			mtrx.CopyTo(arr, 0);
 			
 			Tuple<sbyte, float[][]> t = GetUpTriang(arr);
@@ -160,11 +160,11 @@ namespace MatrixOperations
 				throw new Exception("Determinant of matrix is 0, this matrix has not a reverse matrix");
 		
 			float[][] arr = null;
-			BCI<float>.init(ref arr, mtrx.Length, mtrx[0].Length);
+			BCI.init<float>(ref arr, mtrx.Length, mtrx[0].Length);
 			mtrx.CopyTo(arr, 0);
 			
 			float [][] e = null;
-			BCI<float>.init(ref e, mtrx.Length, mtrx[0].Length);
+			BCI.init<float>(ref e, mtrx.Length, mtrx[0].Length);
 			for (int i = 0; i < e.Length; i++)
 				e[i][i] = 1;
 			
@@ -187,7 +187,28 @@ namespace MatrixOperations
 				throw new Exception("Wrong sizes of matrices, they can't be multiplied");
 		
 			float[][] res = null;
-			BCI<float>.init(ref res, a.Length, b[0].Length);
+			BCI.init<float>(ref res, a.Length, b[0].Length);
+			
+			Parallel.For(0, a.Length, delegate(int i) {
+				for (int j = 0; j < b[0].Length; j++)
+				{
+					float sum = 0;
+					for (int p = 0; p < a[0].Length; p++)
+							sum += a[i][p] * b[p][j];
+					res[i][j] = sum;
+				}
+			});
+			
+			return res;
+		}
+		
+		public static float[][] GetMult(byte[][] a, float[][] b)
+		{
+			if (a.Length != b[0].Length)
+				throw new Exception("Wrong sizes of matrices, they can't be multiplied");
+		
+			float[][] res = null;
+			BCI.init<float>(ref res, a.Length, b[0].Length);
 			
 			Parallel.For(0, a.Length, delegate(int i) {
 				for (int j = 0; j < b[0].Length; j++)

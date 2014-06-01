@@ -33,7 +33,7 @@ namespace KernelNeuroNet
 			}
 				
 			float[][] cnts = null;
-			BCI<float>.init(ref cnts, fN, fN);
+			BCI.init<float>(ref cnts, fN, fN);
 			
 			for (int i = 0; i < fN; i++)
 				for (int j = 0; j < fN; j++)
@@ -43,10 +43,15 @@ namespace KernelNeuroNet
 		
 		public Tuple<float, char> Recognize(byte[] image, int bitn)
 		{
-			float[] z = new float[memImages.Length], x = new float[N];
+			byte[][] memTr = MtrxOps.GetTransp<byte>(memImages);
+			float[][] mult = MtrxOps.GetMult(memTr, revCnts);
+			float[] z = new float[memImages.Length], x = new float[N], y = new float[N];	
 			image.CopyTo(x, 0);
+			
 			for (int i = 0; i < memImages.Length; i++)
 				z[i] = K(memImages[i], x);
+			y = MtrxOps.GetMult(mult, z);
+			x = SigmoidActFunc(y);
 		}
 		
 		byte[] DimUp(byte[] v, int fn)
@@ -89,6 +94,18 @@ namespace KernelNeuroNet
 		}
 		
 		float K(byte[] v1, byte[] v2)
+		{
+			if (v1.Length != v2.Length)
+				throw new Exception("Kernel can't apply to vectors different dimensions");
+			
+			float res = 0;
+			for (int i = 0; i < v1.Length; i++)
+				res += (float)(v1[i] * v2[i]);
+				
+			return res;
+		}
+		
+		float K(byte[] v1, float[] v2)
 		{
 			if (v1.Length != v2.Length)
 				throw new Exception("Kernel can't apply to vectors different dimensions");

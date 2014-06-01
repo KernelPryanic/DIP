@@ -18,7 +18,7 @@ namespace NeuroNet
         {
             N = n * n;
             ch = chr;
-            BCI<float>.init(ref cncts, N, N);
+            BCI.init<float>(ref cncts, N, N);
             nrns = new sbyte[N];
             numbImg = colIm;
 

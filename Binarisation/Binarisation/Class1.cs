@@ -12,11 +12,11 @@ using BaseConstInit;
 
 namespace ByteGraphics
 {
-    public class Transformation : BCI<int>
+    public class Transformation : BCI
     {
         public static void fill(out float[][] arr, int n, int m)
         {
-            BCI<float>.initOut(out arr, n, m);
+            BCI.initOut<float>(out arr, n, m);
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < m; j++)
                     arr[i][j] = float.MaxValue;
@@ -159,8 +159,8 @@ namespace ByteGraphics
             try
             {
                 int imW = btd.Width, imH = btd.Height, stride = btd.Stride;
-                BCI<float>.init(ref pTr, imH + 1, imW + 1);
-                BCI<Tuple<int, float, float>>.init(ref buffer, imH + 1, imW + 1);
+                BCI.init<float>(ref pTr, imH + 1, imW + 1);
+                BCI.init<Tuple<int, float, float>>(ref buffer, imH + 1, imW + 1);
                 fill(out br, imH + 1, imW + 1);
 
                 Marshal.Copy(btd.Scan0, image, 0, image.Length);
@@ -274,7 +274,7 @@ namespace ByteGraphics
                 int imH = btd.Height, imW = btd.Width, stride = btd.Stride, xR = 0, yR = 0, xD = 0, yD = 0;
                 image = new byte[btd.Stride * imH];
                 Tuple<int, int, int, int, byte>[][] localMx = null;
-                BCI<Tuple<int, int, int, int, byte>>.init(ref localMx, imH + 1, imW + 1);
+                BCI.init<Tuple<int, int, int, int, byte>>(ref localMx, imH + 1, imW + 1);
 
                 Marshal.Copy(btd.Scan0, image, 0, image.Length);
 
@@ -393,8 +393,8 @@ namespace ByteGraphics
                 int imH = btd.Height, imW = btd.Width, stride = btd.Stride;
                 image = new byte[btd.Stride * imH];
                 int[][] local1 = null, local2 = null;
-                BCI<int>.init(ref local1, imH + 1, imW + 1);
-                BCI<int>.init(ref local2, imH + 1, imW + 1);
+                BCI.init<int>(ref local1, imH + 1, imW + 1);
+                BCI.init<int>(ref local2, imH + 1, imW + 1);
 
                 Marshal.Copy(btd.Scan0, image, 0, image.Length);
 

@@ -14,7 +14,7 @@ namespace AlgorithmsTesting
 				throw new Exception("Wrong sizes of matrices, they can't be multiplied");
 		
 			float[][] res = null;
-			BCI<float>.init(ref res, a.Length, b[0].Length);
+			BCI.init<float>(ref res, a.Length, b[0].Length);
 			
 			Parallel.For(0, a.Length, delegate(int i) {
 				for (int j = 0; j < b[0].Length; j++)
@@ -74,7 +74,7 @@ namespace AlgorithmsTesting
 		
 			float res = 1;
 			float[][] arr = null;
-			BCI<float>.init(ref arr, mtrx.Length, mtrx[0].Length);
+			BCI.init<float>(ref arr, mtrx.Length, mtrx[0].Length);
 			Array.Copy(mtrx, arr, mtrx.Length * mtrx[0].Length);
 			
 			Tuple<sbyte, float[][]> t = GetUpTriang(arr);
@@ -95,7 +95,7 @@ namespace AlgorithmsTesting
 				string[] sArr = sr.ReadLine().Split(' ');
 				int n = int.Parse(sArr[0]), m = int.Parse(sArr[1]);
 				float[][] mtrx = null;
-				BCI<float>.init(ref mtrx, n, m);
+				BCI.init<float>(ref mtrx, n, m);
 				
 				for (int i = 0; i < n; i++)
 				{
