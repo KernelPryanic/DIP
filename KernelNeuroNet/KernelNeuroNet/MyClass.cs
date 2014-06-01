@@ -41,10 +41,13 @@ namespace KernelNeuroNet
 			revCnts = MtrxOps.GetReverse(cnts);
 		}
 		
-		/*public Tuple<float, char> Recognize()
+		public Tuple<float, char> Recognize(byte[] image, int bitn)
 		{
-			
-		}*/
+			float[] z = new float[memImages.Length], x = new float[N];
+			image.CopyTo(x, 0);
+			for (int i = 0; i < memImages.Length; i++)
+				z[i] = K(memImages[i], x);
+		}
 		
 		byte[] DimUp(byte[] v, int fn)
 		{
@@ -59,7 +62,7 @@ namespace KernelNeuroNet
 		{
 			int fild = 0;
 			byte[] res = new byte[Math.Min((int)(Math.Pow(2, v.Length) - 1), n)];
-			Array.Copy(v, res, v.Length);
+			v.CopyTo(res, 0);
 			n -= v.Length;
 			fild += v.Length;
 			

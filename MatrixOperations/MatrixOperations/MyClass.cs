@@ -140,8 +140,7 @@ namespace MatrixOperations
 			float res = 1;
 			float[][] arr = null;
 			BCI<float>.init(ref arr, mtrx.Length, mtrx[0].Length);
-			for (int i = 0; i < mtrx.Length; i++)
-				Array.Copy(mtrx[i], arr[i], mtrx[i].Length);
+			mtrx.CopyTo(arr, 0);
 			
 			Tuple<sbyte, float[][]> t = GetUpTriang(arr);
 			if (t.Item1 == 0)
@@ -162,8 +161,7 @@ namespace MatrixOperations
 		
 			float[][] arr = null;
 			BCI<float>.init(ref arr, mtrx.Length, mtrx[0].Length);
-			for (int i = 0; i < mtrx.Length; i++)
-				Array.Copy(mtrx[i], arr[i], mtrx[i].Length);
+			mtrx.CopyTo(arr, 0);
 			
 			float [][] e = null;
 			BCI<float>.init(ref e, mtrx.Length, mtrx[0].Length);
