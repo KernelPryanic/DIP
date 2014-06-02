@@ -183,7 +183,7 @@ namespace MatrixOperations
 		
 		public static float[][] GetMult(float[][] a, float[][] b)
 		{
-			if (a.Length != b[0].Length)
+			if (a[0].Length != b.Length)
 				throw new Exception("Wrong sizes of matrices, they can't be multiplied");
 		
 			float[][] res = null;
@@ -204,7 +204,7 @@ namespace MatrixOperations
 		
 		public static float[][] GetMult(byte[][] a, float[][] b)
 		{
-			if (a.Length != b[0].Length)
+			if (a[0].Length != b.Length)
 				throw new Exception("Wrong sizes of matrices, they can't be multiplied");
 		
 			float[][] res = null;
@@ -218,6 +218,23 @@ namespace MatrixOperations
 							sum += a[i][p] * b[p][j];
 					res[i][j] = sum;
 				}
+			});
+			
+			return res;
+		}
+		
+		public static float[] GetMult(float[] a, float[][] b)
+		{
+			if (a.Length != b.Length)
+				throw new Exception("Wrong sizes of matrices, they can't be multiplied");
+			
+			float[] res = new float[b[0].Length];
+			
+			Parallel.For(0, b[0].Length, delegate(int i) {
+				float sum = 0;
+				for (int j = 0; j < a.Length; j++)
+					sum += a[j] * b[j][i];
+				res[i] = sum;
 			});
 			
 			return res;

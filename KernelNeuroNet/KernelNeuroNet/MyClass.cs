@@ -33,32 +33,42 @@ namespace KernelNeuroNet
 			}
 				
 			float[][] cnts = null;
-			BCI.init<float>(ref cnts, fN, fN);
+			BCI.init<float>(ref cnts, images.Length, images.Length);
 			
-			for (int i = 0; i < fN; i++)
-				for (int j = 0; j < fN; j++)
+			for (int i = 0; i < images.Length; i++)
+			{
+				for (int j = 0; j < images.Length; j++)
+				{
 					cnts[i][j] = K(expImages[i], expImages[j]);
+					Console.Write(cnts[i][j] + " ");
+				}
+				Console.WriteLine();
+			}
 			revCnts = MtrxOps.GetReverse(cnts);
 		}
 		
 		public Tuple<float, char> Recognize(byte[] image, int bitn)
 		{
 			byte[][] memTr = MtrxOps.GetTransp<byte>(memImages);
-			float[][] mult = MtrxOps.GetMult(memTr, revCnts);
-			float[] z = new float[memImages.Length], x = new float[N], y = new float[N];	
+			float[][] mult = MtrxOps.GetMult(memTr, revCnts), y = new float[N][];
+			float[] z = new float[memImages.Length], x = new float[N];	
 			image.CopyTo(x, 0);
 			
 			for (int i = 0; i < memImages.Length; i++)
 				z[i] = K(memImages[i], x);
-			y = MtrxOps.GetMult(mult, z);
+			float[][] _z = new float[z.Length][];
+			for (int i = 0; i < z.Length; i++)
+				_z[i][0] = z[i];
+			y = MtrxOps.GetMult(mult, _z);
 			x = SigmoidActFunc(y);
+			return Tuple.Create(0F, 'a');
 		}
 		
 		byte[] DimUp(byte[] v, int fn)
 		{
 			if (fn < v.Length)
 				throw new Exception("Ok, but I'll not do this :) New dimension is lower than native.");
-			if (fn > Math.Pow(2, v.Length))
+			if (fn >= Math.Pow(2, v.Length))
 				throw new Exception("Can't get so high dimension :)");
 			return DoDimUp(v, ref fn);
 		}
@@ -85,11 +95,11 @@ namespace KernelNeuroNet
 			return res;
 		}
 		
-		float[] SigmoidActFunc(float[] v)
+		float[] SigmoidActFunc(float[][] v)
 		{
 			float[] res = new float[v.Length];
 			for (int i = 0; i < v.Length; i++)
-				res[i] = (float)Math.Exp(10 * (v[i] - 0.5)) / (float)(1 + Math.Exp(10 * (v[i] - 0.5)));
+				res[i] = (float)Math.Exp(10 * (v[i][0] - 0.5)) / (float)(1 + Math.Exp(10 * (v[i][0] - 0.5)));
 			return res;	
 		}
 		
@@ -119,9 +129,9 @@ namespace KernelNeuroNet
 		
 		byte[] Sify(byte[] image, int bitn)
 		{
-			byte[] res = new byte[image.Length / 3];
+			byte[] res = new byte[image.Length / bitn];
 			for (int i = 0; i < res.Length; i++)
-				res[i] = (byte)((image[i * bitn] == 0) ? 1 : 0);
+				res[i] = (byte)((image[i * bitn] == 0) ? 0 : 1);
 			return res;
 		}
 	}

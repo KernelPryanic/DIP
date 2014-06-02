@@ -6,124 +6,156 @@ using BaseConstInit;
 
 namespace AlgorithmsTesting
 {
-	class MainClass
+	public class KernelNet
 	{
-		public static float[][] GetMult(float[][] a, float[][] b)
+ 		float[][] revCnts, multTr;
+		byte[][] memImages;
+		int N, fN;
+	
+		public KernelNet(byte[][] images, int n, int fn, int bitn, char chr)
 		{
-			if (a.Length != b[0].Length)
-				throw new Exception("Wrong sizes of matrices, they can't be multiplied");
-		
-			float[][] res = null;
-			BCI.init<float>(ref res, a.Length, b[0].Length);
+			N = n * n;
+			fN = fn * fn;
+			byte[][] expImages = new byte[images.Length][];
+			memImages = new byte[images.Length][];
 			
-			Parallel.For(0, a.Length, delegate(int i) {
-				for (int j = 0; j < b[0].Length; j++)
+			for (int i = 0; i < images.GetLength(0); i++)
+			{
+				memImages[i] = Sify(images[i], bitn);
+				expImages[i] = DimUp(memImages[i], fN);
+			}
+				
+			float[][] cnts = null;
+			BCI.init<float>(ref cnts, images.Length, images.Length);
+			
+			for (int i = 0; i < images.Length; i++)
+			{
+				for (int j = 0; j < images.Length; j++)
 				{
-					float sum = 0;
-					for (int p = 0; p < a[0].Length; p++)
-							sum += a[i][p] * b[p][j];
-					res[i][j] = sum;
+					cnts[i][j] = K(expImages[i], expImages[j]);
+					Console.Write(cnts[i][j] + " ");
 				}
-			});
+				Console.WriteLine();
+			}
+			revCnts = MtrxOps.GetReverse(cnts);
+			multTr = MtrxOps.GetTransp<float>(MtrxOps.GetMult(MtrxOps.GetTransp<byte>(memImages), revCnts));
+		}
+		
+		public Tuple<float, char> Recognize(byte[] image, int bitn)
+		{
+			float[] z = new float[memImages.Length], x = ToFloat(Sify(image, bitn)), y = new float[N];
 			
+			for (int r = 0; r < 10; r++)
+			{
+				for (int i = 0; i < memImages.Length; i++)
+					z[i] = K(memImages[i], x);
+				y = MtrxOps.GetMult(z, multTr);
+				x = SigmoidActFunc(y);
+			}
+			return Tuple.Create(0F, 'a');
+		}
+		
+		byte[] DimUp(byte[] v, int fn)
+		{
+			if (fn < v.Length)
+				throw new Exception("Ok, but I'll not do this :) New dimension is lower than native.");
+			if (fn >= Math.Pow(2, v.Length))
+				throw new Exception("Can't get so high dimension :)");
+			return DoDimUp(v, ref fn);
+		}
+		
+		byte[] DoDimUp(byte[] v, ref int n)
+		{
+			int fild = 0;
+			byte[] res = new byte[Math.Min((int)(Math.Pow(2, v.Length) - 1), n)];
+			v.CopyTo(res, 0);
+			n -= v.Length;
+			fild += v.Length;
+			
+			for (int i = 0; i < v.Length; i++)
+			{
+				byte[] buf = new byte[Math.Min(v.Length - i - 1, n)];
+				for (int j = 0; j < buf.Length; j++)
+					buf[j] = (byte)(v[i] * v[i + 1 + j]);
+				byte[] rec = DoDimUp(buf, ref n);
+				Array.Copy(rec, 0, res, fild, rec.Length);
+				fild += rec.Length;
+				if (n == 0)
+					return res;
+			}
 			return res;
 		}
-	
-		static sbyte find_swap(float[][] mtrx, int i, ref sbyte sign)
-		{
-			int j;
-			float[] buf;
-			
-			for (j = i + 1; j < mtrx.Length && mtrx[j][i] == 0; j++) 
-				{	}
-			if (j == mtrx.Length) 
-				return 0;
-			
-			
-			buf = mtrx[i];
-			mtrx[i] = mtrx[j];
-			mtrx[j] = buf;
-			
-			sign *= -1;
-			
-			return sign;
-		}
-	
-		static Tuple<sbyte, float[][]> GetUpTriang(float[][] mtrx)
-		{
-			sbyte sign = 1;
-			
-			for (int i = 0; i < mtrx.Length; i++)
-			{
-				if (mtrx[i][i] == 0 && find_swap(mtrx, i, ref sign) == 0) 
-					return new Tuple<sbyte, float[][]> (0, null);
-				Parallel.For(i + 1, mtrx[0].Length, delegate(int j) {
-					float coef = mtrx[j][i] / mtrx[i][i];
-					for (int p = i; p < mtrx[0].Length; p++) 
-						mtrx[j][p] -= coef * mtrx[i][p];
-				});
-			}
-			
-			return Tuple.Create(sign, mtrx);
-		}
-	
-		public static float GetDet(float[][] mtrx)
-		{
-			if (mtrx.Length != mtrx[0].Length)
-				throw new Exception("Wrong size of matrix, it mush be square matrix");
 		
-			float res = 1;
-			float[][] arr = null;
-			BCI.init<float>(ref arr, mtrx.Length, mtrx[0].Length);
-			Array.Copy(mtrx, arr, mtrx.Length * mtrx[0].Length);
-			
-			Tuple<sbyte, float[][]> t = GetUpTriang(arr);
-			if (t.Item1 == 0)
-				return 0;
-				
-			for (int i = 0; i < mtrx.Length; i++)
-				res *= t.Item2[i][i];
-				
-			return res * t.Item1;
+		float[] SigmoidActFunc(float[] v)
+		{
+			float[] res = new float[v.Length];
+			for (int i = 0; i < v.Length; i++)
+				res[i] = (float)Math.Exp(10 * (v[i] - 0.5)) / (float)(1 + Math.Exp(10 * (v[i] - 0.5)));
+			return res;	
 		}
-	
+		
+		float K(byte[] v1, byte[] v2)
+		{
+			if (v1.Length != v2.Length)
+				throw new Exception("Kernel can't apply to vectors different dimensions");
+			
+			float res = 0;
+			for (int i = 0; i < v1.Length; i++)
+				res += (float)(v1[i] * v2[i]);
+				
+			return res;
+		}
+		
+		float K(byte[] v1, float[] v2)
+		{
+			if (v1.Length != v2.Length)
+				throw new Exception("Kernel can't apply to vectors different dimensions");
+			
+			float res = 0;
+			for (int i = 0; i < v1.Length; i++)
+				res += (float)(v1[i] * v2[i]);
+				
+			return res;
+		}
+		
+		byte[] Sify(byte[] image, int bitn)
+		{
+			byte[] res = new byte[image.Length / bitn];
+			for (int i = 0; i < res.Length; i++)
+				res[i] = (byte)((image[i * bitn] == 0) ? 0 : 1);
+			return res;
+		}
+		
+		float[] ToFloat(byte[] image)
+		{
+			float[] res = new float[image.Length];
+			for (int i = 0; i < image.Length; i++)
+				res[i] = (float)image[i];
+			return res;
+		}
+	}
+
+	class MainClass
+	{	
 		public static void Main (string[] args)
 		{
 			using (StreamReader sr = new StreamReader("input.txt"))
 			{
-				string s;
-				string[] sArr = sr.ReadLine().Split(' ');
-				int n = int.Parse(sArr[0]), m = int.Parse(sArr[1]);
-				float[][] mtrx = null;
-				BCI.init<float>(ref mtrx, n, m);
-				
-				for (int i = 0; i < n; i++)
+				string s = sr.ReadLine();
+				string[] arr = s.Split(' ');
+				int n1 = int.Parse(arr[0]), m1 = int.Parse(arr[1]);
+				byte[][] images = new byte[n1][];
+				for (int i = 0; i < n1; i++)
 				{
+					images[i] = new byte[m1];
 					s = sr.ReadLine();
-					sArr = s.Split(' ');
-					for (int j = 0; j < sArr.Length; j++)
-						mtrx[i][j] = float.Parse(sArr[j]);
+					arr = s.Split(' ');
+					for (int j = 0; j < m1; j++)
+						images[i][j] = byte.Parse(arr[j]);
 				}
 				
-				//mtrx = MatrixOperations.MtrxOps.GetTransp(mtrx);
-				float[][] mtrx1 = MtrxOps.GetMult(mtrx, mtrx);
-				
-				for (int i = 0; i < mtrx1.Length; i++)
-				{
-					for (int j = 0; j < mtrx1[0].Length; j++)
-						Console.Write(mtrx1[i][j] + " ");
-					Console.Write('\n');
-				}
-				
-				Console.Write(MtrxOps.GetDet(mtrx) + "\n");
-				float[][] arr = MtrxOps.GetReverse(mtrx);
-				
-				for (int i = 0; i < n; i++)
-				{
-					for (int j = 0; j < m; j++)
-						Console.Write(arr[i][j] + " ");
-					Console.Write('\n');
-				}
+				KernelNet kn = new KernelNet(images, 2, 3, 3, 'a');
+				kn.Recognize(new byte[]{0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255}, 3);
 			}
 			
 		}

@@ -32,11 +32,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="MatrixOperations">
-      <HintPath>..\..\MatrixOperations\MatrixOperations\bin\Release\MatrixOperations.dll</HintPath>
-    </Reference>
     <Reference Include="BaseConstInit">
       <HintPath>..\..\BaseConstInit\BaseConstInit\bin\Release\BaseConstInit.dll</HintPath>
+    </Reference>
+    <Reference Include="MatrixOperations">
+      <HintPath>..\..\MatrixOperations\MatrixOperations\bin\Release\MatrixOperations.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
