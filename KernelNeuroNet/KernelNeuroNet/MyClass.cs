@@ -15,7 +15,7 @@ namespace KernelNeuroNet
 {
 	public class KernelNet
 	{
- 		float[][] revCnts;
+ 		float[][] revCnts, multTr;
 		byte[][] memImages;
 		int N, fN;
 	
@@ -45,22 +45,20 @@ namespace KernelNeuroNet
 				Console.WriteLine();
 			}
 			revCnts = MtrxOps.GetReverse(cnts);
+			multTr = MtrxOps.GetTransp<float>(MtrxOps.GetMult(MtrxOps.GetTransp<byte>(memImages), revCnts));
 		}
 		
 		public Tuple<float, char> Recognize(byte[] image, int bitn)
 		{
-			byte[][] memTr = MtrxOps.GetTransp<byte>(memImages);
-			float[][] mult = MtrxOps.GetMult(memTr, revCnts), y = new float[N][];
-			float[] z = new float[memImages.Length], x = new float[N];	
-			image.CopyTo(x, 0);
+			float[] z = new float[memImages.Length], x = ToFloat(Sify(image, bitn)), y = new float[N];
 			
-			for (int i = 0; i < memImages.Length; i++)
-				z[i] = K(memImages[i], x);
-			float[][] _z = new float[z.Length][];
-			for (int i = 0; i < z.Length; i++)
-				_z[i][0] = z[i];
-			y = MtrxOps.GetMult(mult, _z);
-			x = SigmoidActFunc(y);
+			for (int r = 0; r < 10; r++)
+			{
+				for (int i = 0; i < memImages.Length; i++)
+					z[i] = K(memImages[i], x);
+				y = MtrxOps.GetMult(z, multTr);
+				x = SigmoidActFunc(y);
+			}
 			return Tuple.Create(0F, 'a');
 		}
 		
@@ -95,11 +93,11 @@ namespace KernelNeuroNet
 			return res;
 		}
 		
-		float[] SigmoidActFunc(float[][] v)
+		float[] SigmoidActFunc(float[] v)
 		{
 			float[] res = new float[v.Length];
 			for (int i = 0; i < v.Length; i++)
-				res[i] = (float)Math.Exp(10 * (v[i][0] - 0.5)) / (float)(1 + Math.Exp(10 * (v[i][0] - 0.5)));
+				res[i] = (float)Math.Exp(10 * (v[i] - 0.5)) / (float)(1 + Math.Exp(10 * (v[i] - 0.5)));
 			return res;	
 		}
 		
@@ -132,6 +130,14 @@ namespace KernelNeuroNet
 			byte[] res = new byte[image.Length / bitn];
 			for (int i = 0; i < res.Length; i++)
 				res[i] = (byte)((image[i * bitn] == 0) ? 0 : 1);
+			return res;
+		}
+		
+		float[] ToFloat(byte[] image)
+		{
+			float[] res = new float[image.Length];
+			for (int i = 0; i < image.Length; i++)
+				res[i] = (float)image[i];
 			return res;
 		}
 	}
