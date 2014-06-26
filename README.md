@@ -1,4 +1,0 @@
-DIP
-===
-
-Document Identification Programm
