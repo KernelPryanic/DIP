@@ -63,9 +63,11 @@ namespace HighAlgorithms
 
                     bufBt = Transformation.Do_Reduction(ref bufBt);
 
-                    bufBtd = bufBt.LockBits(new Rectangle(0, 0, bufBt.Width, bufBt.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                    bufBtd = bufBt.LockBits(new Rectangle(0, 0, bufBt.Width, bufBt.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);   
                     image = new byte[bufBtd.Stride * bufBtd.Height];
                     Marshal.Copy(bufBtd.Scan0, image, 0, image.Length);
+                    for (int i = 0; i < image.Length; i++)
+                    	image[i] = (image[i] < BaseConstants.mxBr / 2) ? (byte)0 : (byte)BaseConstants.mxBr;
                     bufBt.UnlockBits(bufBtd);
                 }
             }

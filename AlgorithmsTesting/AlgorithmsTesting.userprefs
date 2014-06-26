@@ -2,16 +2,18 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
   <MonoDevelop.Ide.Workbench ActiveDocument="AlgorithmsTesting/Program.cs">
     <Files>
-      <File FileName="AlgorithmsTesting/Program.cs" Line="49" Column="5" />
-      <File FileName="AlgorithmsTesting/bin/Release/input.txt" Line="1" Column="5" />
+      <File FileName="AlgorithmsTesting/Program.cs" Line="41" Column="1" />
+      <File FileName="AlgorithmsTesting/bin/Release/input.txt" Line="3" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/home/null/Рабочий стол/DIP/AlgorithmsTesting/AlgorithmsTesting/Program.cs" line="50" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
-    <Watch file="AlgorithmsTesting/Program.cs" line="55" offsetX="430" offsetY="972" expression="_z" liveUpdate="False" />
+    <Watch file="AlgorithmsTesting/Program.cs" line="186" offsetX="382" offsetY="3330" expression="a" liveUpdate="False" />
+    <Watch file="AlgorithmsTesting/Program.cs" line="54" offsetX="438" offsetY="954" expression="z" liveUpdate="False" />
+    <Watch file="AlgorithmsTesting/Program.cs" line="46" offsetX="734" offsetY="809" expression="x" liveUpdate="False" />
+    <Watch file="AlgorithmsTesting/Program.cs" line="53" offsetX="262" offsetY="936" expression="x" liveUpdate="False" />
+    <Watch file="AlgorithmsTesting/Program.cs" line="53" offsetX="262" offsetY="936" expression="pred" liveUpdate="False" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
 </Properties>

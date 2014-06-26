@@ -730,5 +730,5 @@ namespace ByteGraphics
 
             return nImage;
         }
-    }  
+    }
 }

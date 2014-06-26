@@ -127,8 +127,8 @@ namespace Neuron_Testing
                     BitmapData btd = bt.LockBits(new Rectangle(0, 0, bt.Width, bt.Height), ImageLockMode.ReadWrite, bt.PixelFormat);
 
                     Transformation.Do_BinarisationNiblack(ref btd, 3);
-                    Transformation.Do_My_Erosion_Dilatation(ref btd, true, 2);
-                    im = Transformation.Do_My_Erosion_Dilatation(ref btd, false, 2);
+                    Transformation.Do_My_Erosion_Dilatation(ref btd, true, 1);
+                    im = Transformation.Do_My_Erosion_Dilatation(ref btd, false, 1);
 
                     bt.UnlockBits(btd);
 
