@@ -50,17 +50,17 @@
     <Reference Include="HighAlgo">
       <HintPath>..\..\HighAlgo\HighAlgo\bin\Release\HighAlgo.dll</HintPath>
     </Reference>
-    <Reference Include="NeuroNet">
-      <HintPath>..\..\NeuroNet\NeuroNet\bin\Release\NeuroNet.dll</HintPath>
-    </Reference>
     <Reference Include="BaseConstInit">
       <HintPath>..\..\BaseConstInit\BaseConstInit\bin\Release\BaseConstInit.dll</HintPath>
+    </Reference>
+    <Reference Include="MatrixOperations">
+      <HintPath>..\..\MatrixOperations\MatrixOperations\bin\Release\MatrixOperations.dll</HintPath>
     </Reference>
     <Reference Include="KernelNeuroNet">
       <HintPath>..\..\KernelNeuroNet\KernelNeuroNet\bin\Release\KernelNeuroNet.dll</HintPath>
     </Reference>
-    <Reference Include="MatrixOperations">
-      <HintPath>..\..\MatrixOperations\MatrixOperations\bin\Release\MatrixOperations.dll</HintPath>
+    <Reference Include="NeuroNet">
+      <HintPath>..\..\NeuroNet\NeuroNet\bin\Release\NeuroNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

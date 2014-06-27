@@ -311,8 +311,9 @@ namespace AlgorithmsTesting
 			float res = 1;
 			float[][] arr = null;
 			BCI.init<float>(ref arr, mtrx.Length, mtrx[0].Length);
-			//Array.Copy(mtrx, arr, mtrx.LongLength);
-			mtrx.CopyTo(arr, 0);
+			
+			for (int i = 0; i < mtrx.Length; i++)
+				mtrx[i].CopyTo(arr[i], 0);
 			
 			Tuple<sbyte, float[][]> t = GetUpTriang(arr);
 			if (t.Item1 == 0)

@@ -18,9 +18,11 @@ namespace KernelNeuroNet
  		float[][] revCnts, multTr;
 		byte[][] memImages;
 		int N, fN;
+		char ch;
 	
 		public KernelNet(byte[][] images, int n, int fn, int bitn, char chr)
 		{
+			ch = chr;
 			N = n * n;
 			fN = fn * fn;
 			byte[][] expImages = new byte[images.Length][];
@@ -36,30 +38,30 @@ namespace KernelNeuroNet
 			BCI.init<float>(ref cnts, images.Length, images.Length);
 			
 			for (int i = 0; i < images.Length; i++)
-			{
 				for (int j = 0; j < images.Length; j++)
-				{
 					cnts[i][j] = K(expImages[i], expImages[j]);
-					Console.Write(cnts[i][j] + " ");
-				}
-				Console.WriteLine();
-			}
+					
 			revCnts = MtrxOps.GetReverse(cnts);
 			multTr = MtrxOps.GetTransp<float>(MtrxOps.GetMult(MtrxOps.GetTransp<byte>(memImages), revCnts));
 		}
 		
-		public Tuple<float, char> Recognize(byte[] image, int bitn)
+		public Tuple<float, char> Recognize(byte[] image, int bitn, float eps)
 		{
-			float[] z = new float[memImages.Length], x = ToFloat(Sify(image, bitn)), y = new float[N];
+			float[] z = new float[memImages.Length], x = ToFloat(Sify(image, bitn)), 
+			y = new float[N], pred = new float[x.Length];
+			float converg = 0, buf;
 			
-			for (int r = 0; r < 10; r++)
+			while ((buf = Math.Abs(norma(x) - norma(pred))) > eps)
 			{
+				converg += buf;
+				pred = x;
 				for (int i = 0; i < memImages.Length; i++)
 					z[i] = K(memImages[i], x);
 				y = MtrxOps.GetMult(z, multTr);
 				x = SigmoidActFunc(y);
 			}
-			return Tuple.Create(0F, 'a');
+			
+			return Tuple.Create(converg / (float)Math.Sqrt(memImages.Length), ch);
 		}
 		
 		byte[] DimUp(byte[] v, int fn)
@@ -74,7 +76,7 @@ namespace KernelNeuroNet
 		byte[] DoDimUp(byte[] v, ref int n)
 		{
 			int fild = 0;
-			byte[] res = new byte[Math.Min((int)(Math.Pow(2, v.Length) - 1), n)];
+			byte[] res = new byte[n];
 			v.CopyTo(res, 0);
 			n -= v.Length;
 			fild += v.Length;
@@ -146,6 +148,14 @@ namespace KernelNeuroNet
 			for (int i = 0; i < image.Length; i++)
 				res[i] = (float)image[i];
 			return res;
+		}
+		
+		float norma(float[] v)
+		{
+			float sum = 0;
+			for (int i = 0; i < v.Length; i++)
+				sum += v[i] * v[i];
+			return (float)Math.Sqrt(sum);
 		}
 	}
 }
