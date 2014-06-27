@@ -245,14 +245,21 @@ namespace Neuron_Testing
 				if (n == 0)
 					return res;
 			}
+			
 			return res;
 		}
 		
 		float[] SigmoidActFunc(float[] v)
 		{
 			float[] res = new float[v.Length];
+			float expa;
+			
 			for (int i = 0; i < v.Length; i++)
-				res[i] = (float)Math.Exp(10 * (v[i] - 0.5)) / (float)(1 + Math.Exp(10 * (v[i] - 0.5)));
+			{
+				expa = (float)Math.Exp(10 * (v[i] - 0.5));
+				res[i] = expa / (float)(1 + expa);
+			}
+			
 			return res;	
 		}
 		

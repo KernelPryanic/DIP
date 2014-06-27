@@ -2,8 +2,8 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
   <MonoDevelop.Ide.Workbench ActiveDocument="AlgorithmsTesting/Program.cs">
     <Files>
-      <File FileName="AlgorithmsTesting/Program.cs" Line="41" Column="1" />
-      <File FileName="AlgorithmsTesting/bin/Release/input.txt" Line="3" Column="1" />
+      <File FileName="AlgorithmsTesting/Program.cs" Line="136" Column="3" />
+      <File FileName="AlgorithmsTesting/bin/Release/input.txt" Line="6" Column="30" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

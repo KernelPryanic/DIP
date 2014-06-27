@@ -1,8 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Neuron Testing/Form1.cs">
     <Files>
-      <File FileName="Neuron Testing/Form1.cs" Line="89" Column="51" />
+      <File FileName="Neuron Testing/Form1.cs" Line="119" Column="62" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

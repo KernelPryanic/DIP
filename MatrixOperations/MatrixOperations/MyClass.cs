@@ -76,7 +76,7 @@ namespace MatrixOperations
 			{
 				if (mtrx[i][i] == 0 && find_swap(mtrx, i, ref sign) == 0) 
 					return new Tuple<sbyte, float[][]> (0, null);
-				Parallel.For(i + 1, mtrx[0].Length, delegate(int j) {
+				Parallel.For(i + 1, mtrx.Length, delegate(int j) {
 					float coef = mtrx[j][i] / mtrx[i][i];
 					for (int p = i; p < mtrx[0].Length; p++) 
 						mtrx[j][p] -= coef * mtrx[i][p];
@@ -94,7 +94,7 @@ namespace MatrixOperations
 			{
 				if (mtrx[i][i] == 0 && find_swap(mtrx, add, i) == 0) 
 					return new Tuple<float[][], float[][]> (null, null);
-				Parallel.For(i + 1, mtrx[0].Length, delegate(int j) 
+				Parallel.For(i + 1, mtrx.Length, delegate(int j) 
 				{
 					float coef = mtrx[j][i] / mtrx[i][i];
 					for (int p = 0; p < mtrx[0].Length; p++)
