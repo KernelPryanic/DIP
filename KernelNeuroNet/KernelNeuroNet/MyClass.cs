@@ -15,13 +15,14 @@ namespace KernelNeuroNet
 {
 	public class KernelNet
 	{
- 		float[][] revCnts, multTr;
+ 		float[][] multTr;
 		byte[][] memImages;
 		int N, fN;
 		char ch;
 	
 		public KernelNet(byte[][] images, int n, int fn, int bitn, char chr)
 		{
+			//fN = fn in the future
 			ch = chr;
 			N = n * n;
 			fN = fn * fn;
@@ -41,8 +42,7 @@ namespace KernelNeuroNet
 				for (int j = 0; j < images.Length; j++)
 					cnts[i][j] = K(expImages[i], expImages[j]);
 					
-			revCnts = MtrxOps.GetReverse(cnts);
-			multTr = MtrxOps.GetTransp<float>(MtrxOps.GetMult(MtrxOps.GetTransp<byte>(memImages), revCnts));
+			multTr = MtrxOps.GetTransp<float>(MtrxOps.GetMult(MtrxOps.GetTransp<byte>(memImages), MtrxOps.GetReverse(cnts)));
 		}
 		
 		public Tuple<float, char> Recognize(byte[] image, int bitn, float eps)
