@@ -57,6 +57,9 @@ namespace Neuron_Testing
             imagery = new Dictionary<String, byte[][]>();
             byte[] bufIm;
             Tuple<byte[], Point, Point, int> t = null;
+
+            //List<Bitmap> test = new List<Bitmap>();
+
             using (FolderBrowserDialog fbd = new FolderBrowserDialog())
             {
                 if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -81,9 +84,11 @@ namespace Neuron_Testing
                                     bufIm = Transformation.Do_BinarisationOts(ref btd);
                                     bt.UnlockBits(btd);
 
+                                    //test.Add(bt);
+
                                     bool[][] used = null;
                                     BCI.init<bool>(ref used, btd.Height, btd.Width);
-                                    
+
                                     for (int i = 0; i < bufIm.Length; i += byteLen)
                                         if (i - btd.Stride * (i / btd.Stride) < byteLen * btd.Width && bufIm[i] == 0 && bufIm[i + 1] == 0 && bufIm[i + 2] == 0)
                                         {
@@ -96,7 +101,7 @@ namespace Neuron_Testing
                                         imagery[itemF.Name][c] = HighAlgo.NormalizeSqPic(t.Item1, t.Item4, standart);
                                         c++;
                                     }
-	                                }
+                                }
                             }
 
                             knt[idx] = new KernelNet(imagery[itemF.Name], standart, standart + 1, byteLen, itemF.Name[0]);
@@ -104,7 +109,20 @@ namespace Neuron_Testing
                         }
                         catch { }
                     }
+
                     textBox1.Text = ((DateTime.Now.Ticks - t1) / 10000.0).ToString();
+
+                    /*ThreadPool.QueueUserWorkItem(delegate
+                    {
+                        foreach (var testIm in test)
+                        {
+                            Invoke(new Action(delegate
+                            {
+                                pictureBox1.Image = testIm;
+                            }));
+                            System.Threading.Thread.Sleep(500);
+                        }
+                    });*/
                 }
             }
         }
@@ -125,12 +143,12 @@ namespace Neuron_Testing
                     Bitmap bt = (Bitmap)Bitmap.FromFile(ofd.FileName);
                     byte[] im = new byte[bt.Width * bt.Width * byteLen];
 
-                    pictureBox1.Image = bt; 
+                    pictureBox1.Image = bt;
                     BitmapData btd = bt.LockBits(new Rectangle(0, 0, bt.Width, bt.Height), ImageLockMode.ReadWrite, bt.PixelFormat);
 
                     Transformation.Do_BinarisationNiblack(ref btd, 3);
                     Transformation.Do_My_Erosion_Dilatation(ref btd, true, 2);
-                    im = Transformation.Do_My_Erosion_Dilatation(ref btd, false, 2);
+                    im = Transformation.Do_My_Erosion_Dilatation(ref btd, false, 1);
 
                     bt.UnlockBits(btd);
 
@@ -140,9 +158,9 @@ namespace Neuron_Testing
                     Tuple<byte[], Point, Point, int> symb = null;
 
                     long t1 = DateTime.Now.Ticks;
-                    bool[][] used= null;
+                    bool[][] used = null;
                     BCI.init<bool>(ref used, btd.Height, btd.Width);
-                    
+
                     for (int i = 0; i < btd.Stride * btd.Height; i += byteLen)
                         if (i + 2 < btd.Stride * btd.Height && im[i] == 0 && im[i + 1] == 0 && im[i + 2] == 0)
                         {
@@ -157,11 +175,11 @@ namespace Neuron_Testing
                             }
                             symb = null;
                         }
-                        
+
                     textBox1.Text = ((DateTime.Now.Ticks - t1) / 10000.0).ToString();
                     pictureBox1.Image = bt;
                 }
-                
+
             }
         }
     }

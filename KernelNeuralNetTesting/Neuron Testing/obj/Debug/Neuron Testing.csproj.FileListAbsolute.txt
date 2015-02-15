@@ -47,3 +47,6 @@ C:\Users\FromZeus\Desktop\DIP Resurrection\Neuron Testing\Neuron Testing\obj\Deb
 C:\Users\FromZeus\Desktop\DIP Resurrection\Neuron Testing\Neuron Testing\obj\Debug\Neuron_Testing.Form1.resources
 C:\Users\FromZeus\Desktop\DIP Resurrection\Neuron Testing\Neuron Testing\obj\Debug\Neuron_Testing.Properties.Resources.resources
 C:\Users\FromZeus\Desktop\DIP Resurrection\Neuron Testing\Neuron Testing\obj\Debug\Neuron Testing.csproj.GenerateResource.Cache
+E:\KernelNeuralNetTesting\Neuron Testing\bin\Debug\Neuron Testing.exe.config
+E:\KernelNeuralNetTesting\Neuron Testing\obj\Debug\Neuron Testing.exe
+E:\KernelNeuralNetTesting\Neuron Testing\obj\Debug\Neuron Testing.pdb
